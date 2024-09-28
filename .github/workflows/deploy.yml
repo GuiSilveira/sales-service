@@ -42,7 +42,7 @@ jobs:
                         cd ~/sales-system
                         git pull origin main
                       else
-                        git clone https://github.com/<SEU_USUARIO>/<SEU_REPOSITORIO>.git ~/sales-system
+                        git clone https://github.com/GuiSilveira/sales-service.git ~/sales-system
                         cd ~/sales-system
                       fi
 
