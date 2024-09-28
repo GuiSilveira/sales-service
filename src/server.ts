@@ -71,7 +71,7 @@ fastify.post('/sales', async (request, reply) => {
 const start = async () => {
     try {
         await fastify.listen({ port: Number(APP_PORT), host: '0.0.0.0' })
-        console.log(`Sales service running on http://localhost:${APP_PORT}`)
+        console.log(`Sales service running on http://localhost:${APP_PORT}!`)
     } catch (err) {
         fastify.log.error(err)
         process.exit(1)
