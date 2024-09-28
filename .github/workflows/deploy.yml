@@ -42,11 +42,11 @@ jobs:
 
                       # Navegar para o diretório do projeto ou clonar o repositório se ainda não existir
                       if [ -d "$HOME/sales-system" ]; then
-                        cd ~/sales-system
+                        cd $HOME/sales-system
 
                         # Preservar o arquivo .env antes do pull, se existir
                         if [ -f ".env" ]; then
-                          mv .env $HOME/backup/env_backup
+                          mv .env $HOME/backup/env_sales_backup
                         fi
 
                         # Fazer o pull para atualizar o repositório
@@ -57,8 +57,8 @@ jobs:
                       fi
 
                       # Restaurar o arquivo .env do backup, se existir
-                      if [ -f "$HOME/backup/env_backup" ]; then
-                        mv $HOME/backup/env_backup .env
+                      if [ -f "$HOME/backup/env_sales_backup" ]; then
+                        mv $HOME/backup/env_sales_backup .env
                       fi
 
                       # Remover e reconstruir o diretório de build
