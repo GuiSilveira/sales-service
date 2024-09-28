@@ -2,3 +2,6 @@ node_modules
 dist
 .tool-versions
 .env
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
