@@ -37,12 +37,17 @@ jobs:
                         echo "PM2 já está instalado."
                       fi
 
+                      # Criar diretório de backup se não existir
+                      mkdir -p ~/backup
+
                       # Navegar para o diretório do projeto ou clonar o repositório se ainda não existir
                       if [ -d "~/sales-system" ]; then
                         cd ~/sales-system
 
-                        # Preservar o arquivo .env antes do pull
-                        mv .env ~/backup/env_backup || true
+                        # Preservar o arquivo .env antes do pull, se existir
+                        if [ -f ".env" ]; then
+                          mv .env ~/backup/env_backup
+                        fi
 
                         # Fazer o pull para atualizar o repositório
                         git pull origin main
@@ -52,7 +57,9 @@ jobs:
                       fi
 
                       # Restaurar o arquivo .env do backup, se existir
-                      mv ~/backup/env_backup .env || true
+                      if [ -f "~/backup/env_backup" ]; then
+                        mv ~/backup/env_backup .env
+                      fi
 
                       # Remover e reconstruir o diretório de build
                       rm -rf dist
