@@ -1,0 +1,57 @@
+name: Deploy to EC2 with PM2
+
+on:
+    push:
+        branches: [main] # Monitora a branch 'main'. Altere para a branch desejada.
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Check out the repository (Para obter o commit atual)
+              uses: actions/checkout@v3
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: '20.17.0' # Defina a versão do Node.js necessária para a aplicação
+
+            - name: SSH into EC2 and deploy with PM2
+              uses: appleboy/ssh-action@v0.1.2
+              with:
+                  host: ${{ secrets.EC2_HOST }}
+                  username: ${{ secrets.EC2_USER }}
+                  key: ${{ secrets.EC2_SSH_KEY }}
+                  port: 22
+                  script: |
+                      # Instalar Git se não estiver instalado
+                      sudo apt-get update
+                      sudo apt-get install -y git
+
+                      # Verificar se o PM2 já está instalado, caso contrário, instalar
+                      if ! command -v pm2 > /dev/null; then
+                        echo "PM2 não encontrado. Instalando..."
+                        sudo npm install -g pm2
+                      else
+                        echo "PM2 já está instalado."
+                      fi
+
+                      # Navegar para o diretório do projeto ou clonar o repositório se ainda não existir
+                      if [ -d "~/sales-system" ]; then
+                        cd ~/sales-system
+                        git pull origin main
+                      else
+                        git clone https://github.com/<SEU_USUARIO>/<SEU_REPOSITORIO>.git ~/sales-system
+                        cd ~/sales-system
+                      fi
+
+                      # Instalar dependências
+                      npm install
+
+                      # Compilar o TypeScript para JavaScript
+                      npm run build
+
+                      # Usar PM2 com o arquivo ecosystem.config.js para iniciar ou reiniciar os serviços
+                      pm2 startOrRestart ecosystem.config.js
+                      pm2 save  # Salvar o estado atual para reiniciar automaticamente após reboot
